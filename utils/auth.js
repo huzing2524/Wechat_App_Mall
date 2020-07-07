@@ -1,4 +1,6 @@
-const WXAPI = require('apifm-wxapi')
+const WXAPI = require('apifm-wxapi');
+const config = require('../config');
+const baseApi = config.baseApi;
 
 async function checkSession(){
   return new Promise((resolve, reject) => {
@@ -64,30 +66,32 @@ async function getUserInfo() {
 }
 
 async function login(page){
-  const _this = this
+  // const _this = this;
   wx.login({
-    success: function (res) {
-      WXAPI.login_wx(res.code).then(function (res) {        
-        if (res.code == 10000) {
-          // 去注册
-          //_this.register(page)
-          return;
-        }
-        if (res.code != 0) {
+    success (res) {
+      console.log('res->', res)
+      if (res.code) {
+        wx.request({
+          url: baseApi + 'login',
+          data: {code: res.code},
+          method: "POST",
+          success (res) {
+            console.log('请求后台登录成功->' + res)
+          },
+          fail (res) {
+            console.log('请求失败->' + res)
+          }
+        })
+      } else {
           // 登录错误
+          console.log('登录失败！' + res.errMsg)
           wx.showModal({
             title: '无法登录',
-            content: res.msg,
+            content: res.errMsg,
             showCancel: false
           })
           return;
-        }
-        wx.setStorageSync('token', res.data.token)
-        wx.setStorageSync('uid', res.data.uid)
-        if ( page ) {
-          page.onShow()
-        }
-      })
+      }
     }
   })
 }

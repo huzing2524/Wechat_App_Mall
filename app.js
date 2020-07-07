@@ -1,8 +1,12 @@
 const WXAPI = require('apifm-wxapi')
 const CONFIG = require('config.js')
 const AUTH = require('utils/auth')
+
 App({
-  onLaunch: function() {
+  globalData: {
+    isConnected: true
+  },
+  onLaunch: function () {
     WXAPI.init(CONFIG.subDomain)
     const that = this;
     // 检测新版本
@@ -40,7 +44,7 @@ App({
      * 监听网络状态变化
      * 可根据业务需求进行调整
      */
-    wx.onNetworkStatusChange(function(res) {
+    wx.onNetworkStatusChange(function (res) {
       if (!res.isConnected) {
         that.globalData.isConnected = false
         wx.showToast({
@@ -56,6 +60,7 @@ App({
     WXAPI.queryConfigBatch('mallName,WITHDRAW_MIN,ALLOW_SELF_COLLECTION,order_hx_uids,subscribe_ids,share_profile').then(res => {
       if (res.code == 0) {
         res.data.forEach(config => {
+          console.log(config.key + ': ' + config.value);
           wx.setStorageSync(config.key, config.value);
         })
         if (this.configLoadOK) {
@@ -63,9 +68,10 @@ App({
         }
       }
     })
+    // wx.setStorageSync('mallName', '商城')
   },
 
-  onShow (e) {
+  onShow(e) {
     // 保存邀请人
     if (e && e.query && e.query.inviter_id) {
       wx.setStorageSync('referrer', e.query.inviter_id)
@@ -119,8 +125,5 @@ App({
         })
       }
     })
-  },
-  globalData: {
-    isConnected: true
   }
 })
