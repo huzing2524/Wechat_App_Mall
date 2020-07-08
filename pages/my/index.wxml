@@ -229,4 +229,5 @@
   <view class="space"></view>
 </view>
 
+<!-- 隐藏弹窗 微信授权登录 使用模板 /template/login/index.wxml -->
 <template is="apifmLogin" data="{{wxlogin: wxlogin}}" />

@@ -69,7 +69,7 @@ async function login(page){
   // const _this = this;
   wx.login({
     success (res) {
-      console.log('res->', res)
+      console.log('login->', res)
       if (res.code) {
         wx.request({
           url: baseApi + 'login',
@@ -103,6 +103,7 @@ async function register(page) {
       let code = res.code; // 微信登录接口返回的 code 参数，下面注册接口需要用到
       wx.getUserInfo({
         success: function (res) {
+          console.log('我的 授权登录res->', res)
           let iv = res.iv;
           let encryptedData = res.encryptedData;
           let referrer = '' // 推荐人
@@ -111,14 +112,29 @@ async function register(page) {
             referrer = referrer_storge;
           }
           // 下面开始调用注册接口
-          WXAPI.register_complex({
-            code: code,
-            encryptedData: encryptedData,
-            iv: iv,
-            referrer: referrer
-          }).then(function (res) {
-            _this.login(page);
+          wx.request({
+            url: baseApi + 'register',
+            data: {
+              code: code,
+              encryptedData: encryptedData,
+              iv: iv
+            },
+            method: "POST",
+            success (res) {
+              console.log('请求后台登录成功->' + res)
+            },
+            fail (res) {
+              console.log('请求失败->' + res)
+            }
           })
+          // WXAPI.register_complex({
+          //   code: code,
+          //   encryptedData: encryptedData,
+          //   iv: iv,
+          //   referrer: referrer
+          // }).then(function (res) {
+          //   _this.login(page);
+          // })
         }
       })
     }

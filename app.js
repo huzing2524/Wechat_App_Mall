@@ -109,6 +109,7 @@ App({
     }
     // 自动登录
     AUTH.checkHasLogined().then(async isLogined => {
+      console.log('自动登录标记 !isLogined = ', !isLogined);
       if (!isLogined) {
         AUTH.login()
       } else {
