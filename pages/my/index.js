@@ -3,6 +3,7 @@ const CONFIG = require('../../config.js')
 const WXAPI = require('apifm-wxapi')
 const AUTH = require('../../utils/auth')
 const TOOLS = require('../../utils/tools.js')
+const baseApi = CONFIG.baseApi;
 
 Page({
 	data: {
@@ -24,22 +25,27 @@ Page({
 	onLoad() {
 	},
   onShow() {
+    console.log('我的 页面刷新------');
+
     const _this = this
     const order_hx_uids = wx.getStorageSync('order_hx_uids')
     this.setData({
       version: CONFIG.version,
       order_hx_uids
     })
+
     AUTH.checkHasLogined().then(isLogined => {
+      console.log('检查是否已经登录');
       this.setData({
         wxlogin: isLogined
       })
       if (isLogined) {
         _this.getUserApiInfo();
-        _this.getUserAmount();
-        _this.orderStatistics();
+        // _this.getUserAmount();
+        // _this.orderStatistics();
       }
     })
+
     // 获取购物车数据，显示TabBarBadge
     TOOLS.showTabBarBadge();
   },
@@ -50,8 +56,8 @@ Page({
       showCancel:false
     })
   },
-  loginOut(){
-    AUTH.loginOut()
+  logOut(){
+    AUTH.logOut()
     wx.reLaunch({
       url: '/pages/my/index'
     })
@@ -89,19 +95,22 @@ Page({
     })
   },
   getUserApiInfo: function () {
+    console.log('获取用户详情------');
     var that = this;
-    WXAPI.userDetail(wx.getStorageSync('token')).then(function (res) {
-      if (res.code == 0) {
-        let _data = {}
-        _data.apiUserInfoMap = res.data
-        if (res.data.base.mobile) {
-          _data.userMobile = res.data.base.mobile
+    wx.request({
+      url: baseApi + 'user/detail',
+      data: {
+        token: wx.getStorageSync('token')
+      },
+      method: 'GET',
+      success (res) {
+        if (res.statusCode == 200) {
+          console.log('用户信息 res.data -> ' + res.data)
+          let apiUserInfoMap = res.data;
+          that.setData({apiUserInfoMap: apiUserInfoMap});
         }
-        if (that.data.order_hx_uids && that.data.order_hx_uids.indexOf(res.data.base.id) != -1) {
-          _data.canHX = true // 具有扫码核销的权限
-        }
-        that.setData(_data);
       }
+
     })
   },
   getUserAmount: function () {
@@ -164,14 +173,50 @@ Page({
     })
   },
   processLogin(e) {
-    if (!e.detail.userInfo) {
-      wx.showToast({
-        title: '已取消',
-        icon: 'none',
+    console.log('我的界面 立即登录 e->', e, e.detail)
+    this.setData({wxlogin: true});
+    var that = this;
+
+    wx.login({
+    success: function (res) {
+      let code = res.code; // 微信登录接口返回的 code 参数，下面注册接口需要用到
+      wx.getUserInfo({
+        success: function (res) {
+          console.log('我的 授权登录res->', res)
+          let iv = res.iv;
+          let encryptedData = res.encryptedData;
+
+          wx.request({
+            url: baseApi + 'user/login',
+            data: {
+              code: code,
+              encryptedData: encryptedData,
+              iv: iv
+            },
+            method: "POST",
+            success (res) {
+              if (res.statusCode == 200) {
+                // console.log('请求后台登录成功 res.data.token->' + res.data.token);
+                wx.setStorageSync('token', res.data.token);
+                // 刷新页面。更新用户信息
+                that.onShow();
+              } else {
+                wx.showModal({
+                  title: '提示',
+                  content: '登录失败，请重试！',
+                  showCancel: false
+                })
+              }
+            },
+            fail (res) {
+              console.log('请求失败->' + res)
+            }
+          })
+        }
       })
-      return;
     }
-    AUTH.register(this);
+  })
+
   },
   scanOrderCode(){
     wx.scanCode({
@@ -191,10 +236,13 @@ Page({
     })
   },
   clearStorage(){
-    wx.clearStorageSync()
+    wx.clearStorageSync();
     wx.showToast({
       title: '已清除',
       icon: 'success'
+    });
+    wx.reLaunch({
+      url: '/pages/my/index'
     })
   },
 })

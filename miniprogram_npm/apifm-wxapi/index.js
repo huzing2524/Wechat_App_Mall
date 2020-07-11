@@ -96,9 +96,11 @@ module.exports =
 // 小程序开发api接口工具包，https://github.com/gooking/wxapi
 var API_BASE_URL = 'https://api.it120.cc';
 var subDomain = '-';
+var Dev_URL = 'http://192.168.31.249:8000';
 
 var request = function request(url, needSubDomain, method, data) {
-  var _url = API_BASE_URL + (needSubDomain ? '/' + subDomain : '') + url;
+  // var _url = API_BASE_URL + (needSubDomain ? '/' + subDomain : '') + url;
+  var _url = needSubDomain ? (API_BASE_URL + ('/' + subDomain) + url) : (Dev_URL + url);
   return new Promise(function (resolve, reject) {
     wx.request({
       url: _url,
@@ -282,9 +284,8 @@ module.exports = {
     return request('/pay/alipay/semiAutomatic/payurl', true, 'post', data);
   },
   login_wx: function login_wx(code) {
-    return request('/user/wxapp/login', true, 'post', {
-      code: code,
-      type: 2
+    return request('/user/login', false, 'post', {
+      code: code
     });
   },
   loginWxaMobile: function loginWxaMobile(code, encryptedData, iv) {
@@ -323,7 +324,7 @@ module.exports = {
     });
   },
   register_complex: function register_complex(data) {
-    return request('/user/wxapp/register/complex', true, 'post', data);
+    return request('/user/register', false, 'post', data);
   },
   register_simple: function register_simple(data) {
     return request('/user/wxapp/register/simple', true, 'post', data);
@@ -534,7 +535,7 @@ module.exports = {
     });
   },
   userDetail: function userDetail(token) {
-    return request('/user/detail', true, 'get', {
+    return request('/user/detail', false, 'get', {
       token: token
     });
   },
