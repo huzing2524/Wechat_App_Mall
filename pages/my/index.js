@@ -1,19 +1,19 @@
 const app = getApp()
-const CONFIG = require('../../config.js')
 const WXAPI = require('apifm-wxapi')
 const AUTH = require('../../utils/auth')
 const TOOLS = require('../../utils/tools.js')
+const CONFIG = require('../../config.js')
 const baseApi = CONFIG.baseApi;
 
 Page({
-	data: {
+  data: {
     wxlogin: true,
 
-    balance:0.00,
-    freeze:0,
-    score:0,
-    growth:0,
-    score_sign_continuous:0,
+    balance: 0.00,
+    freeze: 0,
+    score: 0,
+    growth: 0,
+    score_sign_continuous: 0,
     rechargeOpen: false, // 是否开启充值[预存]功能
 
     // 用户订单统计数据
@@ -22,8 +22,7 @@ Page({
     count_id_no_reputation: 0,
     count_id_no_transfer: 0,
   },
-	onLoad() {
-	},
+  onLoad() {},
   onShow() {
     console.log('我的 页面刷新------');
 
@@ -49,20 +48,20 @@ Page({
     // 获取购物车数据，显示TabBarBadge
     TOOLS.showTabBarBadge();
   },
-  aboutUs : function () {
+  aboutUs: function () {
     wx.showModal({
       title: '关于我们',
       content: '本系统基于开源小程序商城系统 https://github.com/EastWorld/wechat-app-mall 搭建，祝大家使用愉快！',
-      showCancel:false
+      showCancel: false
     })
   },
-  logOut(){
+  logOut() {
     AUTH.logOut()
     wx.reLaunch({
       url: '/pages/my/index'
     })
   },
-  getPhoneNumber: function(e) {
+  getPhoneNumber: function (e) {
     if (!e.detail.errMsg || e.detail.errMsg != "getPhoneNumber:ok") {
       wx.showModal({
         title: '提示',
@@ -103,11 +102,13 @@ Page({
         token: wx.getStorageSync('token')
       },
       method: 'GET',
-      success (res) {
+      success(res) {
         if (res.statusCode == 200) {
           console.log('用户信息 res.data -> ' + res.data)
           let apiUserInfoMap = res.data;
-          that.setData({apiUserInfoMap: apiUserInfoMap});
+          that.setData({
+            apiUserInfoMap: apiUserInfoMap
+          });
         }
       }
 
@@ -174,51 +175,54 @@ Page({
   },
   processLogin(e) {
     console.log('我的界面 立即登录 e->', e, e.detail)
-    this.setData({wxlogin: true});
+
+    this.setData({
+      wxlogin: true
+    });
     var that = this;
 
     wx.login({
-    success: function (res) {
-      let code = res.code; // 微信登录接口返回的 code 参数，下面注册接口需要用到
-      wx.getUserInfo({
-        success: function (res) {
-          console.log('我的 授权登录res->', res)
-          let iv = res.iv;
-          let encryptedData = res.encryptedData;
+      success: function (res) {
+        let code = res.code; // 微信登录接口返回的 code 参数，下面注册接口需要用到
+        wx.getUserInfo({
+          success: function (res) {
+            console.log('我的 授权登录res->', res)
+            let iv = res.iv;
+            let encryptedData = res.encryptedData;
 
-          wx.request({
-            url: baseApi + 'user/login',
-            data: {
-              code: code,
-              encryptedData: encryptedData,
-              iv: iv
-            },
-            method: "POST",
-            success (res) {
-              if (res.statusCode == 200) {
-                // console.log('请求后台登录成功 res.data.token->' + res.data.token);
-                wx.setStorageSync('token', res.data.token);
-                // 刷新页面。更新用户信息
-                that.onShow();
-              } else {
-                wx.showModal({
-                  title: '提示',
-                  content: '登录失败，请重试！',
-                  showCancel: false
-                })
+            wx.request({
+              url: baseApi + 'user/login',
+              data: {
+                code: code,
+                encryptedData: encryptedData,
+                iv: iv
+              },
+              method: "POST",
+              success(res) {
+                if (res.statusCode == 200) {
+                  // console.log('请求后台登录成功 res.data.token->' + res.data.token);
+                  wx.setStorageSync('token', res.data.token);
+                  // 刷新页面。更新用户信息
+                  that.onShow();
+                } else {
+                  wx.showModal({
+                    title: '提示',
+                    content: '登录失败，请重试！',
+                    showCancel: false
+                  })
+                }
+              },
+              fail(res) {
+                console.log('请求失败->' + res)
               }
-            },
-            fail (res) {
-              console.log('请求失败->' + res)
-            }
-          })
-        }
-      })
-    }
-  })
+            })
+          }
+        })
+      }
+    })
 
   },
-  scanOrderCode(){
+  scanOrderCode() {
     wx.scanCode({
       onlyFromCamera: true,
       success(res) {
@@ -235,7 +239,7 @@ Page({
       }
     })
   },
-  clearStorage(){
+  clearStorage() {
     wx.clearStorageSync();
     wx.showToast({
       title: '已清除',

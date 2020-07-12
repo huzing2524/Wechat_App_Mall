@@ -54,16 +54,16 @@ Page({
     if (!token) {
       return
     }
-    // const res = await WXAPI.shippingCarInfo(token)
-    // if (res.code == 0) {
-    //   this.setData({
-    //     shippingCarInfo: res.data
-    //   })
-    // } else {
-    //   this.setData({
-    //     shippingCarInfo: null
-    //   })
-    // }
+    const res = await WXAPI.shippingCarInfo(token)
+    if (res.code == 0) {
+      this.setData({
+        shippingCarInfo: res.data
+      })
+    } else {
+      this.setData({
+        shippingCarInfo: null
+      })
+    }
   },
   toIndexPage: function() {
     wx.switchTab({
