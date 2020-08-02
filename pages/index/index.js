@@ -1,5 +1,7 @@
 const WXAPI = require('apifm-wxapi')
 const TOOLS = require('../../utils/tools.js')
+const CONFIG = require('../../config.js')
+const baseApi = CONFIG.baseApi;
 
 const APP = getApp()
 // fixed首次打开不显示标题的bug
@@ -162,20 +164,24 @@ Page({
       })
     }
   },
+
+  // 首页-商品类别
   async categories() {
-    const res = await WXAPI.goodsCategory()
-    let categories = [];
-    if (res.code == 0) {
-      const _categories = res.data.filter(ele => {
-        return ele.level == 1
-      })
-      categories = categories.concat(_categories)
-    }
-    this.setData({
-      categories: categories,
-      activeCategoryId: 0,
-      curPage: 1
+    var that = this;
+    wx.request({
+      url: baseApi + 'spu/categories',
+      method: 'GET',
+      success (res) {
+        console.log(res.data);
+        let categories = res.data;
+        that.setData({
+          categories: categories,
+          activeCategoryId: 0,
+          curPage: 1
+        });
+      }
     });
+    
     this.getGoodsList(0);
   },
   onPageScroll(e) {
