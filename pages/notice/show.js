@@ -1,16 +1,18 @@
 const app = getApp();
-const WXAPI = require('apifm-wxapi')
+const CONFIG = require('../../config.js')
+const baseApi = CONFIG.baseApi;
+
 Page({
   data: {
   
   },
   onLoad: function (options) {
     var that = this;
-    WXAPI.noticeDetail(options.id).then(function (res) {
-      if (res.code == 0) {
-        that.setData({
-          notice: res.data
-        });
+    wx.request({
+      url: baseApi + 'notices/' + options.id,
+      method: 'GET',
+      success (res) {
+        that.setData({notice: res.data})
       }
     })
   },

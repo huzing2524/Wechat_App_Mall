@@ -3,4 +3,7 @@
   <view class="text">
     <parser html="{{notice.content}}" />
   </view>
+  
+  <view class="create_time">创建时间：{{notice.create_time}}</view>
+  <view class="update_time">更新时间：{{notice.update_time}}</view>
 </view>

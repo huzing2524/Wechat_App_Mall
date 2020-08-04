@@ -10,6 +10,8 @@
 		</view>
 	</view>
 </navigator>
+
+<!-- banner轮播图 -->
 <view class="swiper-container">
 	<swiper class="swiper1" indicator-dots="true" indicator-active-color="#fff" autoplay circular>
 		<swiper-item wx:for="{{banners}}" wx:key="id">
@@ -33,11 +35,13 @@
 		</swiper>
 	</view>
 </view>
+
+<!-- 通知消息 滚动显示效果 -->
 <view class="notice-box" wx:if="{{noticeList}}">
 	<view class="notice">
 		<image class="notice_icon" src="/images/notice.png"></image>
 		<swiper class="notice_swiper" vertical autoplay circular>
-			<navigator wx:for="{{noticeList.dataList}}" wx:key="id" url="/pages/notice/show?id={{item.id}}">
+			<navigator wx:for="{{noticeList}}" wx:key="id" url="/pages/notice/show?id={{item.id}}">
 				<swiper-item>
 					<view class="notice_itemr">{{item.title}}</view>
 				</swiper-item>
@@ -48,6 +52,8 @@
 		<navigator url="/pages/notice/index">更多 ></navigator>
 	</view>
 </view>
+
+<!-- 商品分类 -->
 <view class="category-box">
 	<view class="category-list" wx:for="{{categories}}" wx:key="id">
 		<view class="category-column {{activeCategoryId == item.id ? 'type-item-on' : ''}}" bindtap="tabClick" id="{{item.id}}">
@@ -56,6 +62,8 @@
 		</view>
 	</view>
 </view>
+
+<!-- 首页所有商品 -->
 <view class="container">
 	<block wx:for="{{categories}}" wx:key="id" wx:if="{{item.goods}}">
 		<view class="category-goods-title">
@@ -189,12 +197,15 @@
 		<view class="weui-loadmore__tips weui-loadmore__tips_in-line">没有更多啦</view>
 	</view>
 </view>
+
+<!-- 礼物图标 -->
 <view class='coupons-float' bindtap="goCoupons">
 	<image src="/images/gift.png"></image>
 </view>
 
-<navigator wx:if="{{aliveRooms}}" url="plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id={{aliveRooms[0].roomid}}">
+<!-- 视频直播图标 -->
+<!-- <navigator wx:if="{{aliveRooms}}" url="plugin-private://wx2b03c6e691cd7370/pages/live-player-plugin?room_id={{aliveRooms[0].roomid}}">
 	<view style="bottom:200rpx;" class='coupons-float'>
 		<image src="/images/live.png"></image>
 	</view>
-</navigator>
+</navigator> -->

@@ -143,6 +143,7 @@ Page({
         showCancel: false
       })
     } else {
+      console.log('banners -> ', res1.data)
       _data.banners = res1.data
     }
     this.setData(_data)
@@ -241,16 +242,28 @@ Page({
       path: '/pages/index/index?inviter_id=' + wx.getStorageSync('uid')
     }
   },
+
+  // 首页-通知消息 滚动显示效果
   getNotice: function () {
     var that = this;
-    WXAPI.noticeList({ pageSize: 5 }).then(function (res) {
-      if (res.code == 0) {
-        that.setData({
-          noticeList: res.data
-        });
+    wx.request({
+      url: baseApi + 'notices',
+      method: 'GET',
+      success (res) {
+        // console.log('noticeList', res.data.results);
+        that.setData({noticeList: res.data.results})
       }
     })
+    // WXAPI.noticeList({ pageSize: 5 }).then(function (res) {
+    //   if (res.code == 0) {
+    //     console.log('noticeList', res.data);
+    //     that.setData({
+    //       noticeList: res.data
+    //     });
+    //   }
+    // })
   },
+  
   onReachBottom: function () {
     this.setData({
       curPage: this.data.curPage + 1
