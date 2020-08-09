@@ -52,10 +52,11 @@ Page({
     })
   },
   tapBanner: function (e) {
-    const url = e.currentTarget.dataset.url
-    if (url) {
+    const spu_id = e.currentTarget.dataset.spu
+    console.log('跳转spu id -> ', spu_id)
+    if (spu_id) {
       wx.navigateTo({
-        url
+        url: '/pages/goods-details/index?id=' + spu_id
       })
     }
   },
@@ -130,24 +131,23 @@ Page({
       })
     }
   },
+
+  // 读取头部轮播图
   async initBanners() {
-    const _data = {}
-    // 读取头部轮播图
-    const res1 = await WXAPI.banners({
-      type: 'index'
+    var that = this;
+    wx.request({
+      url: baseApi + 'banners',
+      method: 'GET',
+      success(res) {
+        // console.log('banners -> ', res.data)
+        that.setData({
+          banners: res.data
+        })
+      }
     })
-    if (res1.code == 700) {
-      wx.showModal({
-        title: '提示',
-        content: '请在后台添加 banner 轮播图片，自定义类型填写 index',
-        showCancel: false
-      })
-    } else {
-      console.log('banners -> ', res1.data)
-      _data.banners = res1.data
-    }
-    this.setData(_data)
+
   },
+
   onShow: function (e) {
     this.setData({
       shopInfo: wx.getStorageSync('shopInfo')
@@ -172,8 +172,8 @@ Page({
     wx.request({
       url: baseApi + 'spu/categories',
       method: 'GET',
-      success (res) {
-        console.log(res.data);
+      success(res) {
+        // console.log('categories -> ', res.data);
         let categories = res.data;
         that.setData({
           categories: categories,
@@ -182,7 +182,7 @@ Page({
         });
       }
     });
-    
+
     this.getGoodsList(0);
   },
   onPageScroll(e) {
@@ -249,9 +249,11 @@ Page({
     wx.request({
       url: baseApi + 'notices',
       method: 'GET',
-      success (res) {
+      success(res) {
         // console.log('noticeList', res.data.results);
-        that.setData({noticeList: res.data.results})
+        that.setData({
+          noticeList: res.data.results
+        })
       }
     })
     // WXAPI.noticeList({ pageSize: 5 }).then(function (res) {
@@ -263,7 +265,7 @@ Page({
     //   }
     // })
   },
-  
+
   onReachBottom: function () {
     this.setData({
       curPage: this.data.curPage + 1
