@@ -53,7 +53,7 @@ Page({
   },
   tapBanner: function (e) {
     const spu_id = e.currentTarget.dataset.spu
-    console.log('跳转spu id -> ', spu_id)
+    // console.log('跳转spu id -> ', spu_id)
     if (spu_id) {
       wx.navigateTo({
         url: '/pages/goods-details/index?id=' + spu_id
