@@ -87,8 +87,12 @@ Page({
     wx.setNavigationBarTitle({
       title: wx.getStorageSync('mallName')
     })
-    this.initBanners()
-    this.categories()
+    this.initBanners();  // 头部轮播图
+    this.categories();  // 商品类别
+    // this.getGoodsList(0);
+
+    this.goodsList(); // 商品列表
+
     WXAPI.goods({
       recommendStatus: 1
     }).then(res => {
@@ -102,7 +106,7 @@ Page({
     that.getNotice()
     // that.kanjiaGoods()
     that.pingtuanGoods()
-    this.wxaMpLiveRooms()
+    that.wxaMpLiveRooms()
   },
   async miaoshaGoods() {
     const res = await WXAPI.goods({
@@ -176,14 +180,10 @@ Page({
         // console.log('categories -> ', res.data);
         let categories = res.data;
         that.setData({
-          categories: categories,
-          activeCategoryId: 0,
-          curPage: 1
+          categories: categories
         });
       }
     });
-
-    this.getGoodsList(0);
   },
   onPageScroll(e) {
     let scrollTop = this.data.scrollTop
@@ -191,41 +191,58 @@ Page({
       scrollTop: e.scrollTop
     })
   },
-  async getGoodsList(categoryId, append) {
-    if (categoryId == 0) {
-      categoryId = "";
-    }
-    wx.showLoading({
-      "mask": true
-    })
-    const res = await WXAPI.goods({
-      categoryId: categoryId,
-      page: this.data.curPage,
-      pageSize: this.data.pageSize
-    })
-    wx.hideLoading()
-    if (res.code == 404 || res.code == 700) {
-      let newData = {
-        loadingMoreHidden: false
+
+  // 首页 - 商品列表
+  async goodsList() {
+    var that = this;
+    wx.request({
+      url: baseApi + 'spus',
+      method: 'GET',
+      success(res) {
+        // console.log('goodsList -> ', res.data);
+        that.setData({
+          goods: res.data.results
+        })
       }
-      if (!append) {
-        newData.goods = []
-      }
-      this.setData(newData);
-      return
-    }
-    let goods = [];
-    if (append) {
-      goods = this.data.goods
-    }
-    for (var i = 0; i < res.data.length; i++) {
-      goods.push(res.data[i]);
-    }
-    this.setData({
-      loadingMoreHidden: true,
-      goods: goods,
-    });
+    })
   },
+
+  async getGoodsList(categoryId, append) {
+    //   if (categoryId == 0) {
+    //     categoryId = "";
+    //   }
+    //   wx.showLoading({
+    //     "mask": true
+    //   })
+    //   const res = await WXAPI.goods({
+    //     categoryId: categoryId,
+    //     page: this.data.curPage,
+    //     pageSize: this.data.pageSize
+    //   })
+    //   wx.hideLoading()
+    //   if (res.code == 404 || res.code == 700) {
+    //     let newData = {
+    //       loadingMoreHidden: false
+    //     }
+    //     if (!append) {
+    //       newData.goods = []
+    //     }
+    //     this.setData(newData);
+    //     return
+    //   }
+    //   let goods = [];
+    //   if (append) {
+    //     goods = this.data.goods
+    //   }
+    //   for (var i = 0; i < res.data.length; i++) {
+    //     goods.push(res.data[i]);
+    //   }
+    //   this.setData({
+    //     loadingMoreHidden: true,
+    //     goods: goods,
+    //   });
+  },
+
   getCoupons: function () {
     var that = this;
     WXAPI.coupons().then(function (res) {

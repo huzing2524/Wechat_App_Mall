@@ -29,7 +29,8 @@ Page({
     canSubmit: false, //  选中规格尺寸时候是否允许加入购物车
     shopType: "addShopCar", //购物类型，加入购物车或立即购买，默认为加入购物车
 
-    shop_details: {} // 商铺详情信息
+    shop_details: {}, // 商铺详情信息
+    spu_banners: {},  // 顶部商品SPU轮播图
   },
   async onLoad(e) {
     // e.id = 235853
@@ -74,6 +75,19 @@ Page({
     })
     this.getGoodsDetailAndKanjieInfo(this.data.goodsId)
   },
+
+  // 获取顶部商品SPU轮播图
+  // async spu_banners() {
+  //   var that = this;
+  //   wx.request({
+  //     url: baseApi + 'spu/' + goodsId + '/banners',
+  //     success (res) {
+  //       console.log('spu_banners -> ', res)
+  //     }
+  //   })
+  // },
+
+  // 商品收藏检查
   async goodsFavCheck() {
     WXAPI.goodsFavList({
       token: wx.getStorageSync('token')
@@ -90,6 +104,8 @@ Page({
       })
     }
   },
+
+  // 商品收藏/取消收藏
   async addFav() {
     AUTH.checkHasLogined().then(isLogined => {
       this.setData({
@@ -129,9 +145,10 @@ Page({
         });
       }
 
-      if (goodsDetailRes.data.basicInfo.shopId) {
-        this.shopSubdetail(goodsDetailRes.data.basicInfo.shopId)
-      }
+      // if (goodsDetailRes.data.basicInfo.shopId) {
+      //   this.shopSubdetail(goodsDetailRes.data.basicInfo.shopId)
+      // }
+      this.shopSubdetail();
 
       if (goodsDetailRes.data.basicInfo.pingtuan) {
         that.pingtuanList(goodsId)
@@ -176,14 +193,7 @@ Page({
     }
   },
 
-  async shopSubdetail(shopId) {
-    // const res = await WXAPI.shopSubdetail(shopId)
-    // if (res.code == 0) {
-    //   this.setData({
-    //     shopSubdetail: res.data
-    //   })
-    // }
-
+  async shopSubdetail() {
     var shop_details = wx.getStorageSync('shop_details');
     var that = this;
     if (!shop_details) {
