@@ -174,11 +174,11 @@
 	</view>
 
 	<!-- 商品详情页-商铺信息 -->
-	<view wx:if="{{shopSubdetail}}" class="shop-container">
-		<image mode="aspectFill" src="{{shopSubdetail.image}}"></image>
+	<view wx:if="{{shop_detail}}" class="shop-container">
+		<image mode="aspectFill" src="{{shop_detail.image}}"></image>
 		<view class="info">
-			<view class="title">{{shopSubdetail.name}}</view>
-			<view class="address">{{shopSubdetail.address}}</view>
+			<view class="title">{{shop_detail.name}}</view>
+			<view class="address">{{shop_detail.address}}</view>
 		</view>
 	</view>
 
