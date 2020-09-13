@@ -3,8 +3,8 @@
 	<!-- 商品详情页 - 顶部轮播图 -->
 	<view class="swiper-container">
 		<swiper class="swiper_box" indicator-dots="true" indicator-active-color="#fff" circular>
-			<swiper-item wx:for="{{goodsDetail.pics}}" wx:key="id">
-				<image src="{{item.pic}}" class="slide-image" mode="aspectFill" lazy-load="true" />
+			<swiper-item wx:for="{{spu_banners}}" wx:key="id">
+				<image src="{{item.image}}" class="slide-image" mode="aspectFill" lazy-load="true" />
 			</swiper-item>
 		</swiper>
 	</view>

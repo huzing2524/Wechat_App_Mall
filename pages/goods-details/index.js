@@ -1,12 +1,10 @@
 const WXAPI = require('apifm-wxapi')
 const app = getApp();
 const CONFIG = require('../../config.js')
+const baseApi = CONFIG.baseApi;
 const AUTH = require('../../utils/auth')
 const SelectSizePrefix = "选择："
 import Poster from 'wxa-plugin-canvas/poster/poster'
-import {
-  baseApi
-} from '../../config.js';
 
 Page({
   data: {
@@ -56,14 +54,8 @@ Page({
     if (!token) {
       return
     }
-
-    // const res = await WXAPI.shippingCarInfo(token)
-    // if (res.code == 0) {
-    //   this.setData({
-    //     shopNum: res.data.number
-    //   })
-    // }
   },
+
   onShow() {
     AUTH.checkHasLogined().then(isLogined => {
       if (isLogined) {
@@ -72,20 +64,24 @@ Page({
         })
         this.goodsFavCheck()
       }
-    })
+    });
+    
+    this.spu_banners();  // 获取顶部商品SPU轮播图
+
     this.getGoodsDetailAndKanjieInfo(this.data.goodsId)
   },
 
   // 获取顶部商品SPU轮播图
-  // async spu_banners() {
-  //   var that = this;
-  //   wx.request({
-  //     url: baseApi + 'spu/' + goodsId + '/banners',
-  //     success (res) {
-  //       console.log('spu_banners -> ', res)
-  //     }
-  //   })
-  // },
+  async spu_banners() {
+    var that = this;
+    wx.request({
+      url: baseApi + 'spu/' + this.data.goodsId + '/banners',
+      success (res) {
+        // console.log('spu_banners -> ', res.data)
+        that.setData({spu_banners: res.data});
+      }
+    })
+  },
 
   // 商品收藏检查
   async goodsFavCheck() {

@@ -27,7 +27,7 @@ Page({
     activeCategoryId: 0,
     goods: [],
 
-    loadingMoreHidden: true,  // 底部无数据提示分隔线
+    loadingMoreHidden: true, // 底部无数据提示分隔线
 
     coupons: [],
 
@@ -86,9 +86,9 @@ Page({
     wx.setNavigationBarTitle({
       title: wx.getStorageSync('mallName')
     })
-    this.initBanners();  // 头部轮播图
-    this.categories();  // 商品类别
-    this.goodsList();  // 商品列表
+    this.initBanners(); // 头部轮播图
+    this.categories(); // 商品类别
+    this.goodsList(); // 商品列表
 
     WXAPI.goods({
       recommendStatus: 1
@@ -183,8 +183,7 @@ Page({
   },
 
   // 首页 - 商品列表
-  async goodsList(pagination) {
-    // pagination: true/false, 是否需要分页
+  async goodsList() {
     var that = this;
     wx.hideLoading();
     wx.request({
@@ -198,7 +197,9 @@ Page({
         // console.log('goodsList -> ', res.data);
         if (res.statusCode == 404) {
           // 商品列表数据分页加载完，页面到达底部
-          that.setData({loadingMoreHidden: false});
+          that.setData({
+            loadingMoreHidden: false
+          });
           return
         };
 
