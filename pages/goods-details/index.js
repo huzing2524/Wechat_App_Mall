@@ -28,7 +28,7 @@ Page({
     shopType: "addShopCar", //购物类型，加入购物车或立即购买，默认为加入购物车
 
     shop_detail: {}, // 商铺详情信息
-    spu_banners: {},  // 顶部商品SPU轮播图
+    spu_banners: {}, // 顶部商品SPU轮播图
   },
   async onLoad(e) {
     // e.id = 235853
@@ -65,24 +65,56 @@ Page({
         this.goodsFavCheck()
       }
     });
-    
-    this.spu_banners();  // 获取顶部商品SPU轮播图
+
+    this.spuBanners();  // 获取顶部商品SPU轮播图
     this.shopDetail();  // 获取商铺信息
+    this.goodsDetail();  // 商品详情
 
     this.getGoodsDetailAndKanjieInfo(this.data.goodsId)
   },
 
   // 获取顶部商品SPU轮播图
-  async spu_banners() {
+  async spuBanners() {
     var that = this;
     wx.request({
       url: baseApi + 'spu/' + this.data.goodsId + '/banners',
-      success (res) {
+      success(res) {
         // console.log('spu_banners -> ', res.data)
-        that.setData({spu_banners: res.data});
+        that.setData({
+          spu_banners: res.data
+        });
       }
     })
   },
+
+  // 商铺信息
+  async shopDetail() {
+    var shop_detail = wx.getStorageSync('shop_detail');
+    var that = this;
+    if (!shop_detail) {
+      wx.request({
+        url: baseApi + 'shop_detail',
+        success(res) {
+          var shop_detail = res.data[0];
+          // console.log('shop_detail -> ', shop_detail);
+          that.setData({
+            shop_detail: shop_detail
+          });
+          wx.setStorageSync('shop_detail', shop_detail)
+        }
+      })
+    }
+    that.setData({
+      shop_detail: shop_detail
+    });
+  },
+
+  // 商品详情
+  async goodsDetail() {
+    
+  },
+
+  // 商品规格、选项
 
   // 商品收藏检查
   async goodsFavCheck() {
@@ -101,17 +133,6 @@ Page({
       })
     }
   },
-
-  // 商品详情
-  async goodsDetail() {
-
-  },
-
-  // 商品规格、选项
-
-
-  // 商铺信息
-
 
   // 商品收藏/取消收藏
   async addFav() {
@@ -194,27 +215,6 @@ Page({
       }
       that.setData(_data);
     }
-  },
-
-  async shopDetail() {
-    var shop_detail = wx.getStorageSync('shop_detail');
-    var that = this;
-    if (!shop_detail) {
-      wx.request({
-        url: baseApi + 'shop_detail',
-        success(res) {
-          var shop_detail = res.data[0];
-          // console.log('shop_detail -> ', shop_detail);
-          that.setData({
-            shop_detail: shop_detail
-          });
-          wx.setStorageSync('shop_detail', shop_detail)
-        }
-      })
-    }
-    that.setData({
-      shop_detail: shop_detail
-    });
   },
 
   goShopCar: function () {

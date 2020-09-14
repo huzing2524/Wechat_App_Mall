@@ -26,7 +26,7 @@ Page({
     categories: [],
     activeCategoryId: 0,
     goods: [],
-
+    goodsNext: '',  // 分页：下一页是否有数据标志
     loadingMoreHidden: true, // 底部无数据提示分隔线
 
     coupons: [],
@@ -202,7 +202,8 @@ Page({
 
         that.setData({
           goods: that.data.goods.concat(res.data.results),
-          loadingMoreHidden: true
+          loadingMoreHidden: true,
+          goodsNext: res.data.next  // 分页：下一页是否有数据标志
         })
       }
     })
@@ -286,10 +287,13 @@ Page({
 
   // 底部商品列表分页加载更多
   onReachBottom: function () {
-    this.setData({
-      curPage: this.data.curPage + 1
-    });
-    this.goodsList();
+    // 判断下一页是否有数据：下一页next标志不为null才向后台请求商品列表接口 
+    if (this.data.goodsNext) {
+      this.setData({
+        curPage: this.data.curPage + 1
+      });
+      this.goodsList();
+    }
   },
   onPullDownRefresh: function () {
     this.setData({
