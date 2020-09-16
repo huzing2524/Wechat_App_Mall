@@ -1,6 +1,7 @@
 <import src="/template/login/index.wxml" />
 <view class="container">
-	<!-- 商品详情页 - 顶部轮播图 -->
+<!-- 商品详情页 -->
+	<!-- 顶部轮播图 -->
 	<view class="swiper-container">
 		<swiper class="swiper_box" indicator-dots="true" indicator-active-color="#fff" circular>
 			<swiper-item wx:for="{{spu_banners}}" wx:key="id">
@@ -9,15 +10,17 @@
 		</swiper>
 	</view>
 
+	<!-- 商品详情  -->
 	<view class="goods-info">
-		<view class="goods-title">{{goodsDetail.basicInfo.name}}</view>
-		<view class="goods-share" wx:if="{{goodsDetail.basicInfo.commissionType == 1}}">分享有赏，好友下单后可得 {{goodsDetail.basicInfo.commission}} 积分奖励</view>
-		<view class="goods-share" wx:if="{{goodsDetail.basicInfo.commissionType == 2}}">分享有赏，好友下单后可得 {{goodsDetail.basicInfo.commission}}元 现金奖励</view>
+		<view class="goods-title">{{spu_detail.name}}</view>
+		<!-- <view class="goods-share" wx:if="{{goodsDetail.basicInfo.commissionType == 1}}">分享有赏，好友下单后可得 {{goodsDetail.basicInfo.commission}} 积分奖励</view> -->
+		<!-- <view class="goods-share" wx:if="{{goodsDetail.basicInfo.commissionType == 2}}">分享有赏，好友下单后可得 {{goodsDetail.basicInfo.commission}}元 现金奖励</view> -->
 		<view class="goods-profile">
-			<view class="p"><text>¥</text> {{selectSizePrice}}</view>
-			<view wx:if="{{goodsDetail.basicInfo.originalPrice && goodsDetail.basicInfo.originalPrice > 0}}" class="goods-price" style='color:#aaa;text-decoration:line-through;padding: 15rpx 0rpx 0rpx 15rpx;'><text>¥</text> {{selectSizeOPrice}}</view>
-			<view class="r">{{goodsDetail.basicInfo.numberSells}}人已买</view>
+			<view class="p"><text>¥</text> {{spu_detail.price}}</view>
+			<view class="goods-price" style='color:#aaa;text-decoration:line-through;padding: 15rpx 0rpx 0rpx 15rpx;'><text>¥</text> {{spu_detail.market_price}}</view>
+			<view class="r">{{spu_detail.sales}}人已买</view>
 		</view>
+		
 		<view class="goods-info-fx">
 			<view class='item'>
 				<image src='/images/share/share1.png'></image>
@@ -145,10 +148,13 @@
 			</view>
 		</view>
 	</view>
-	<view wx:if="{{hasMoreSelect && goodsDetailSkuShowType==0}}" class="row-arrow" bindtap="bindGuiGeTap">
-		<view>{{selectSize}}</view>
+	
+	<!-- 商品规格选项 -->
+	<view wx:if="{{spu_detail.spu_specification.length > 0}}" class="row-arrow" bindtap="bindGuiGeTap">
+		<view>{{spu_specification}} {{spu_specification_flag}}</view>
 		<image src="/images/icon/next.png"></image>
 	</view>
+	
 	<view class="size-label-box2" wx:if="{{goodsDetailSkuShowType==1}}">
 		<view class="label-title">选择商品规格</view>
 		<view class="size-label-box">
@@ -173,7 +179,7 @@
 		</view>
 	</view>
 
-	<!-- 商品详情页-商铺信息 -->
+	<!-- 商铺信息 -->
 	<view wx:if="{{shop_detail}}" class="shop-container">
 		<image mode="aspectFill" src="{{shop_detail.image}}"></image>
 		<view class="info">
@@ -182,12 +188,14 @@
 		</view>
 	</view>
 
+	<!-- 商品介绍 -->
 	<view class="goods-des-info">
 		<view class="label-title">商品介绍</view>
 		<view class="goods-text">
-			<parser html="{{goodsDetail.content}}" />
+			<parser html="{{spu_detail.desc_detail}}" />
 		</view>
 	</view>
+
 	<view class="goods-des-info" style="margin-top:35rpx;" wx:if="{{!curGoodsKanjia && reputation}}">
 		<view class="label-title" style="border-bottom:1px solid #eee;">大家评价
 			<text style="color:red">（{{reputation.length}}）</text>
@@ -236,6 +244,8 @@
 		<view wx:if="{{goodsDetail.basicInfo.pingtuan}}" class="join-shop-cart" bindtap="tobuy">单独购买</view>
 		<view wx:if="{{goodsDetail.basicInfo.pingtuan}}" class="now-buy" bindtap="toPingtuan">发起拼团</view>
 	</view>
+
+	<!-- 商品规格选项 - 弹出窗口 -->
 	<view class="show-popup" hidden="{{hideShopPopup}}" catchtouchmove="true">
 		<view class="popup-mask" bindtap="closePopupTap"></view>
 		<view class="popup-contents">
