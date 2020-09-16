@@ -266,6 +266,7 @@
 				<block wx:for="{{spu_detail.spu_specification}}" wx:for-item="option" wx:for-index="idx" wx:key="id">
 					<view class="label">{{option.name}}</view>
 					<view class="label-item-box">
+					<!-- todo 商品规格选择 & 价格计算 -->
 						<view class="label-item {{item.active ? 'active' : '' }}" wx:for="{{option.values}}" wx:for-index="index" wx:key="id" bindtap="labelItemTap" data-propertyindex="{{idx}}" data-propertychildindex="{{index}}">
 							{{option.values[index]}}
 						</view>

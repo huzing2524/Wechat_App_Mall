@@ -306,6 +306,7 @@ Page({
    * 选择商品规格
    * @param {Object} e
    */
+  // todo 商品规格选择 & 价格计算
   async labelItemTap(e) {
     const propertyindex = e.currentTarget.dataset.propertyindex
     const propertychildindex = e.currentTarget.dataset.propertychildindex
