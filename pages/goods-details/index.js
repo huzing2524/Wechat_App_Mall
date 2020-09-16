@@ -267,20 +267,18 @@ Page({
     });
 
   },
-  /**
-   * 规格选择弹出框
-   */
+
+  // 规格选择弹出框
   bindGuiGeTap: function () {
     this.setData({
       hideShopPopup: false,
-      selectSizePrice: this.data.goodsDetail.basicInfo.minPrice,
-      selectSizeOPrice: this.data.goodsDetail.basicInfo.originalPrice,
-      skuGoodsPic: this.data.goodsDetail.basicInfo.pic
+      // selectSizePrice: this.data.goodsDetail.basicInfo.minPrice,
+      // selectSizeOPrice: this.data.goodsDetail.basicInfo.originalPrice,
+      // skuGoodsPic: this.data.goodsDetail.basicInfo.pic
     })
   },
-  /**
-   * 规格选择弹出框隐藏
-   */
+
+  // 规格选择弹出框隐藏
   closePopupTap: function () {
     this.setData({
       hideShopPopup: true

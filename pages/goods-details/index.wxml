@@ -251,23 +251,23 @@
 		<view class="popup-contents">
 			<view class="pop-goods-info">
 				<view class="pop-img-box">
-					<image src="{{skuGoodsPic}}" class="goods-thumbnail" bindtap="previewImage" data-url="{{skuGoodsPic}}" />
+					<image src="{{spu_banners[0].image}}" class="goods-thumbnail" bindtap="previewImage" data-url="{{spu_banners[0].image}}" />
 				</view>
 				<view class="pop-goods-des">
-					<view class="pop-goods-title">{{goodsDetail.basicInfo.name}}</view>
+					<view class="pop-goods-title">{{spu_detail.name}}</view>
 					<view class="pop-goods-price">
-						¥ <text class="t1">{{selectSizePrice}}</text>
-						<text wx:if="{{goodsDetail.basicInfo.originalPrice && goodsDetail.basicInfo.originalPrice > 0}}" class="pop-goods-price-original"><text>¥</text> {{selectSizeOPrice}}</text>
+						¥ <text class="t1">{{spu_detail.price}}</text>
+						<text class="pop-goods-price-original"><text>¥</text> {{spu_detail.market_price}}</text>
 					</view>
 				</view>
 				<image class="pop-goods-close" src="/images/icon/close0.svg" bindtap="closePopupTap"></image>
 			</view>
 			<view class="size-label-box">
-				<block wx:for="{{goodsDetail.properties}}" wx:for-item="property" wx:for-index="idx" wx:key="id">
-					<view class="label">{{property.name}}</view>
+				<block wx:for="{{spu_detail.spu_specification}}" wx:for-item="option" wx:for-index="idx" wx:key="id">
+					<view class="label">{{option.name}}</view>
 					<view class="label-item-box">
-						<view class="label-item {{item.active ? 'active' : '' }}" wx:for="{{property.childsCurGoods}}" wx:key="id" bindtap="labelItemTap" data-propertyindex="{{idx}}" data-propertychildindex="{{index}}">
-							{{item.name}}
+						<view class="label-item {{item.active ? 'active' : '' }}" wx:for="{{option.values}}" wx:for-index="index" wx:key="id" bindtap="labelItemTap" data-propertyindex="{{idx}}" data-propertychildindex="{{index}}">
+							{{option.values[index]}}
 						</view>
 					</view>
 				</block>
